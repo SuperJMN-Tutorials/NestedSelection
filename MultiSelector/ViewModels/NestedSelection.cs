@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using DynamicData;
@@ -12,40 +11,38 @@ namespace MultiSelector.ViewModels;
 
 public class NestedSelection : ReactiveObject, IDisposable
 {
-    private bool canUpdate = true;
     private readonly CompositeDisposable disposables = new();
 
     public NestedSelection(ISelectableModel model)
     {
-        var childrenSelectionStates = model.Children
+        Model = model;
+
+        model.Children
             .ToObservableChangeSet()
             .AutoRefresh(x => x.IsSelected)
             .ToCollection()
             .Select(collection => GetSelectionState(collection.Select(selectable => selectable.IsSelected).ToList()))
-            .Where(_ => canUpdate);
-
-        childrenSelectionStates.BindTo(model, x => x.IsSelected)
+            .BindTo(model, x => x.IsSelected)
             .DisposeWith(disposables);
 
-        //ToggleSelection = ReactiveCommand.Create(() => { UpdateCheckedStateCascade(model, model.IsSelected ?? false); })
-        //    .DisposeWith(disposables);
+        this.WhenAnyValue(x => x.Model.IsSelected)
+            .WhereNotNull()
+            .Do(isSelected =>
+            {
+                Toggle(isSelected!.Value);
+            })
+            .Subscribe();
     }
 
-    private void UpdateCheckedStateCascade(ISelectableModel model, bool isChecked)
+    private void Toggle(bool isSelected)
     {
-        canUpdate = false;
-
-        model.IsSelected = isChecked;
-
-        foreach (var child in model.Children)
+        foreach (var item in Model.Children)
         {
-            UpdateCheckedStateCascade(child, isChecked);
+            item.IsSelected = isSelected;
         }
-
-        canUpdate = true;
     }
 
-    public ReactiveCommand<Unit, Unit> ToggleSelection { get; }
+    private ISelectableModel Model { get; }
 
     private static bool? GetSelectionState(IList<bool?> readOnlyCollection)
     {
