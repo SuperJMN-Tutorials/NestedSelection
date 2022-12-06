@@ -13,6 +13,8 @@ public class NestedSelection : ReactiveObject, IDisposable
 {
     private readonly CompositeDisposable disposables = new();
 
+    private bool canUpdate = true;
+
     public NestedSelection(ISelectableModel model)
     {
         Model = model;
@@ -20,37 +22,41 @@ public class NestedSelection : ReactiveObject, IDisposable
         model.Children
             .ToObservableChangeSet()
             .AutoRefresh(x => x.IsSelected)
+            .Where(_ => canUpdate)
             .ToCollection()
-            .Select(collection => GetSelectionState(collection.Select(selectable => selectable.IsSelected).ToList()))
+            .Select(GetSelectionState)
             .BindTo(model, x => x.IsSelected)
             .DisposeWith(disposables);
 
         this.WhenAnyValue(x => x.Model.IsSelected)
             .WhereNotNull()
-            .Do(isSelected =>
-            {
-                Toggle(isSelected!.Value);
-            })
+            .Do(isSelected => Toggle(isSelected!.Value))
             .Subscribe();
     }
 
     private void Toggle(bool isSelected)
     {
+        canUpdate = false;
+
         foreach (var item in Model.Children)
         {
             item.IsSelected = isSelected;
         }
+
+        canUpdate = true;
     }
 
     private ISelectableModel Model { get; }
 
-    private static bool? GetSelectionState(IList<bool?> readOnlyCollection)
+    private static bool? GetSelectionState(IReadOnlyCollection<ISelectableModel> children)
     {
-        bool? selectionState = readOnlyCollection.All(x => x.HasValue && x.Value)
-            ? true
-            : readOnlyCollection.Any(x => x.HasValue && x.Value || !x.HasValue)
-                ? null
-                : false;
+        var selectionCount = children.Count(x => x.IsSelected == true);
+        
+        bool? selectionState = selectionCount == 0
+            ? false
+            : children.Count == selectionCount
+                ? true
+                : null;
         return selectionState;
     }
 
