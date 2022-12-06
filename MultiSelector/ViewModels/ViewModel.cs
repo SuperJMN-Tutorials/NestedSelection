@@ -15,5 +15,5 @@ public class ViewModel : ViewModelBase, ISelectableModel
 
     public ObservableCollection<ViewModel> Children { get; }
 
-    [Reactive] public bool? IsSelected { get; set; }
+    [Reactive] public bool? IsSelected { get; set; } = false;
 }

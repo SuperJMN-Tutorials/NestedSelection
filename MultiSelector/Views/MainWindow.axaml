@@ -14,12 +14,11 @@
 
     <Window.DataTemplates>
         <DataTemplate DataType="vm:ViewModel">
-            <CheckBox IsThreeState="True" Command="{Binding Selector.ToggleSelection}" IsChecked="{Binding IsSelected}">
+            <CheckBox Command="{Binding Selector.ToggleSelection}" IsChecked="{Binding IsSelected}">
                 <ItemsControl Items="{Binding Children}" />
             </CheckBox>
         </DataTemplate>
     </Window.DataTemplates>
-
     
     <ItemsControl Items="{Binding Tree}" />
 

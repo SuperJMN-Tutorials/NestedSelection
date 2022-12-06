@@ -14,7 +14,12 @@ public class MainWindowViewModel : ViewModelBase
         {
             new ViewModel(new ObservableCollection<ViewModel>(Enumerable.Empty<ViewModel>())),
             new ViewModel(new ObservableCollection<ViewModel>(Enumerable.Empty<ViewModel>())),
-            new ViewModel(new ObservableCollection<ViewModel>(Enumerable.Empty<ViewModel>()))
+            new ViewModel(new ObservableCollection<ViewModel>(new[]
+            {
+                new ViewModel(new ObservableCollection<ViewModel>(Enumerable.Empty<ViewModel>())),
+                new ViewModel(new ObservableCollection<ViewModel>(Enumerable.Empty<ViewModel>())),
+                new ViewModel(new ObservableCollection<ViewModel>(Enumerable.Empty<ViewModel>()))
+            }))
         };
 
         var observableCollection = new ObservableCollection<ViewModel>(new ObservableCollection<ViewModel>(viewModels));
