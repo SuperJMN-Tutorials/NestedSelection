@@ -14,7 +14,7 @@
 
     <Window.DataTemplates>
         <DataTemplate DataType="vm:ViewModel">
-            <CheckBox Command="{Binding Selector.ToggleSelection}" IsChecked="{Binding IsSelected}">
+            <CheckBox IsChecked="{Binding IsSelected}">
                 <ItemsControl Items="{Binding Children}" />
             </CheckBox>
         </DataTemplate>

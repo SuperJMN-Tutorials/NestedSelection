@@ -27,8 +27,8 @@ public class NestedSelection : ReactiveObject, IDisposable
         childrenSelectionStates.BindTo(model, x => x.IsSelected)
             .DisposeWith(disposables);
 
-        ToggleSelection = ReactiveCommand.Create(() => { UpdateCheckedStateCascade(model, model.IsSelected ?? false); })
-            .DisposeWith(disposables);
+        //ToggleSelection = ReactiveCommand.Create(() => { UpdateCheckedStateCascade(model, model.IsSelected ?? false); })
+        //    .DisposeWith(disposables);
     }
 
     private void UpdateCheckedStateCascade(ISelectableModel model, bool isChecked)
