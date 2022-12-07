@@ -9,13 +9,13 @@ using ReactiveUI;
 
 namespace MultiSelector.ViewModels;
 
-public class NestedSelection : ReactiveObject, IDisposable
+public class HierarchicalSelectionHandler : ReactiveObject, IDisposable
 {
     private readonly CompositeDisposable disposables = new();
 
     private bool canUpdate = true;
 
-    public NestedSelection(ISelectableModel model)
+    public HierarchicalSelectionHandler(IHierarchicallySelectable model)
     {
         Model = model;
 
@@ -46,9 +46,9 @@ public class NestedSelection : ReactiveObject, IDisposable
         canUpdate = true;
     }
 
-    private ISelectableModel Model { get; }
+    private IHierarchicallySelectable Model { get; }
 
-    private static bool? GetSelectionState(IReadOnlyCollection<ISelectableModel> children)
+    private static bool? GetSelectionState(IReadOnlyCollection<IHierarchicallySelectable> children)
     {
         var selectionCount = children.Count(x => x.IsSelected == true);
         

@@ -3,15 +3,15 @@ using ReactiveUI.Fody.Helpers;
 
 namespace MultiSelector.ViewModels;
 
-public class ViewModel : ViewModelBase, ISelectableModel
+public class ViewModel : ViewModelBase, IHierarchicallySelectable
 {
     public ViewModel(ObservableCollection<ViewModel> viewModels)
     {
         Children = viewModels;
-        Selector = new NestedSelection(this);
+        SelectionHandler = new HierarchicalSelectionHandler(this);
     }
 
-    public NestedSelection Selector { get; }
+    public HierarchicalSelectionHandler SelectionHandler { get; }
 
     public ObservableCollection<ViewModel> Children { get; }
 

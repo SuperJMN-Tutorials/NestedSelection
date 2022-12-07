@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace MultiSelector.ViewModels;
 
-public interface ISelectableModel : INotifyPropertyChanged
+public interface IHierarchicallySelectable : INotifyPropertyChanged
 {
     ObservableCollection<ViewModel> Children { get; }
     public bool? IsSelected { get; set; }
